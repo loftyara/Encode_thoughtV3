@@ -28,6 +28,7 @@ SlotCrossProjector (192 -> 512) -> T5 Decoder (frozen) + Cross-Attention LoRA
                                                     ↓  
 Continuous Autoregressive Generation
 
+
 ## INSTALLATION AND SETUP
 Prerequisites:
     Python 3.12 or higher
