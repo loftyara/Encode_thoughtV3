@@ -3,7 +3,9 @@
 
 A neural architecture for extracting the invariant semantic core of text into a compact matrix of learnable slots and generating stable autoregressive text via native cross-attention. Unlike V2, which collapsed in closed-loop generation, V3 successfully closes the AR loop by injecting slots as encoder_outputs into a frozen T5-small decoder, adapting cross-attention matrices via LoRA, and training with curriculum embedding noise and slot-alignment loss. The pipeline is model-agnostic, operates on frozen base encoders, and achieves robust symbol-by-symbol generation without distribution collapse.
 Full Paper: docs/Encode_thought.pdf
+
 Version 1 (Theoretical): https://github.com/loftyara/Encode_thought/ or https://loftyara.github.io/encode_thought.html
+
 Version 2 (Compression & TF Reconstruction): https://github.com/loftyara/Encode_thoughtV2/ or https://loftyara.github.io/encode_thoughtv2.html
 
 ## KEY HIGHLIGHTS
@@ -16,10 +18,13 @@ Version 2 (Compression & TF Reconstruction): https://github.com/loftyara/Encode_
 
 ## ARCHITECTURE OVERVIEW
 Text -> Token Embeddings (bert-mini) -> Set Transformer Encoder -> Hidden States
+
                                                     ↓  
 Learnable Queries -> Cross-Attention -> Slot Matrix (16 x 192)
+
                                                     ↓  
 SlotCrossProjector (192 -> 512) -> T5 Decoder (frozen) + Cross-Attention LoRA
+
                                                     ↓  
 Continuous Autoregressive Generation
 
@@ -104,10 +109,15 @@ Encode_thoughtV3/
 
 ## CURRENT EXPERIMENTAL RESULTS (TinyStories + bert-mini)
 Metric: Theme Overlap (Val) ~0.72
+
 Metric: Theme Overlap (Train) ~0.70
+
 AR Stability: 80-128 tokens without syntactic collapse or lexical attractors
+
 Trainable Parameters: ~150K (Projector + LoRA adapters)
-Diagnosis: The architecture successfully closes the autoregressive loop and maintains syntax, style, and causal relationships. Residual mutations of names/objects and slight echoes at sentence boundaries are identified as the fundamental capacity limit of the fixed 16x192 bottleneck with frozen T5-small priors. This is not an optimization failure, but a clear architectural boundary.
+
+Diagnosis: The architecture successfully closes the autoregressive loop and maintains syntax, style, and causal relationships. Residual mutations of names/objects and slight echoes at sentence boundaries are 
+identified as the fundamental capacity limit of the fixed 16x192 bottleneck with frozen T5-small priors. This is not an optimization failure, but a clear architectural boundary.
 
 ## ROADMAP (NEXT PHASE: SEQUENTIAL SEMANTIC BLOCKS)
 The fixed slot matrix acts as a global bottleneck for longer narratives. The next iteration will transition from a single static matrix to a sequence of interconnected semantic blocks.
